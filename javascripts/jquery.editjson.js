@@ -93,7 +93,7 @@
 			var o = $.extend(defaults, options);
             return this.each(function() {  
 				o.obj = this;
-				if (o.input) o.data = eval('(' + $('#json-input').val() + ')');
+				//if (o.input) o.data = eval('(' + $('#json-input').val() + ')');
 				$(this).html(_t(o.data, 'data', o));
 				$(this).find(o.tag)._editor(o)
 				$(this).find('li')._hover(o)

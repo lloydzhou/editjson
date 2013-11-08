@@ -2,6 +2,7 @@
 	var defaults = {  
 		separator:' : ',
 		tag: 'span', 
+		rootClass: 'root',
 		keyClass: 'key', 
 		valueClass: 'val',
 		buttonTag: 'a',
@@ -14,6 +15,7 @@
 		deleteButton: 'delete this node',
 		deleteButtonClass: 'delete',
 		deleteButtonTitle: 'delete this node',
+		change: function ($this){},
 		
 		/*callback function to validate the user input.*/
 		validate: function (val){return ('' != val) && (!/[\{\}]+/.test(val));},
@@ -50,7 +52,7 @@
 			$(obj).html($('<input value="' + oldval +'"/>')).children().focus().blur(function(){
 				var val = $(this).val();
 				_e.call($(obj).html(o.validate(val) ? val : oldval), o);
-				_c(o);
+				o.change && o.change(o.obj);
 			});
 		})
 	}, _h = function (o){
@@ -62,39 +64,40 @@
 		$(this).hover(function (){
 			var obj = this;
 			if ($(obj).children(bw).length < 1) {
+				//remove
+				if (!$(obj).parent().hasClass(o.rootClass))
 				$(_w(db,bw, dc, dt)).insertAfter($(obj).children(w+':last')).click(function (){
 					if ($(obj).parent().children(w).length == 1) {
 						$(obj).children(':eq(1)').insertAfter($(obj).parent().parent().children(w+':first'));
 						$(obj).parent().remove();
 					}
 					else $(obj).remove();
-					_c(o);
+					o.change && o.change(o.obj);
 				})
+				//insert
 				if ($(obj).children('ul').length < 1)
 				$(_w(ib,bw, ic, it)).insertAfter($(obj).children(w+':last')).click(function (){
 					$(obj).html($(_t({key:$(obj).children(w+':eq(1)').text()}, $(obj).children(w+':first').text(), o)).html());
 					$(obj).find(w)._editor(o);
 					$(obj).find('li')._hover(o);
-					_c(o);
+					o.change && o.change(o.obj);
 				})
+				//add after
 				$(_w(ab,bw, ac, it)).insertAfter($(obj).children(w+':last')).click(function (){
 					$(_t('value','key', o)).insertAfter(obj)._hover(o).children(w)._editor(o);
-					_c(o);
+					o.change && o.change(o.obj);
 				})
 			}
 		}, function (){
 			$(this).children([bw, '.', ac, ',', bw,'.', ic, ',', bw,'.', dc].join('')).remove()
 		})
-	}, _c = function (o){
-		if (o.input && JSON.stringify) $(o.input).val(JSON.stringify($(o.obj).toJson()))
 	};
     $.fn.extend({
         jsonEditor: function(options) {  
 			var o = $.extend(defaults, options);
             return this.each(function() {  
 				o.obj = this;
-				//if (o.input) o.data = eval('(' + $('#json-input').val() + ')');
-				$(this).html(_t(o.data, 'data', o));
+				$(this).html(_t(o.data, 'data', o)).addClass(o.rootClass);
 				$(this).find(o.tag)._editor(o)
 				$(this).find('li')._hover(o)
             });  

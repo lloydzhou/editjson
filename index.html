@@ -7,7 +7,8 @@
     <meta name="description" content="Editjson : editjson" />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="//raw.github.com/lloydzhou/editjson/master/jquery.editjson.js"></script>
     <title>Editjson</title>
   </head>
 
@@ -31,63 +32,64 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        
-.json-tree a {cursor: pointer; padding-left: 10px;}
-.json-tree span, .json-tree b{width: 220px;display:inline-block;font-weight: bold;font-style: italic;}
-.json-tree li &gt; ul {padding-left: 20px;}
-<ul></ul><p>GET JSON DATA</p>
 
-<div></div>
+	    <h2>Edit JSON DATA</h2>
+		<pre>
+		1. 以“data”作为根节点
+		2. 双击“span”标签可以编辑对应的“key”和“value”
+		   双击之后变成input输入框，自动获得焦点，失去焦点时替换新的值
+		   验证输入是否包含json的特殊字符，若验证不通过，则恢复为原来取值
+		3. li标签的hover事件（鼠标进入）
+		   3.1 会自动在后面添加按钮“Add after this node”
+			   点击之后在当前节点后面添加新的键值
+		   3.2 添加“DELETE”按钮，点击可以删除当前节点，若包含子节点，会一并删除
+		   3.3 若当前节点不包含子节点，还会增加按钮“insert to this node”
+			   点击之后将当前节点“value”插入到当前节点的子节点
+		4. li标签的hover事件（鼠标移出）会删除按钮
+		5. “GET JSON DATA”按钮可以将编辑之后的数据转换为JSON格式。
+		</pre>
 
-<h2>
-<a name="edit-json-data" class="anchor" href="#edit-json-data"><span class="octicon octicon-link"></span></a>Edit JSON DATA</h2>
+		<style>
+		.json-tree a {cursor: pointer; padding-left: 10px;}
+		.json-tree span, .json-tree b{width: 220px;display:inline-block;font-weight: bold;font-style: italic;}
+		.json-tree li > ul {padding-left: 20px;}
+		</style>
+		<ul id="json-tree" class="json-tree"></ul>
+		<button id="get-result" click="alert($('#json-tree').toJson())">GET JSON DATA</button>
+		<div id="result"></div>
+<script>
+$('#json-tree').jsonEditor({
+	tag: 'b', 
+	keyClass: '', 
+	addButton: '<i class="icon-download"></i>Add After', 
+	deleteButton: '<i class="icon-remove-circle"></i>Delete', 
+	insertButton: '<i class="icon-play-circle"></i>Insert',
+	separator: ' : ', 
+	data:<?php echo $jsonData->json_data;?>
+})
+JSON.stringify = JSON.stringify || function (obj) {
+    var t = typeof (obj);
+    if (t != "object" || obj === null) {
+        if (t == "string") obj = '"'+obj+'"';
+        return String(obj);
+    }
+    else {
+        var n, v, json = [], arr = (obj && obj.constructor == Array);
+        for (n in obj) {
+            v = obj[n]; t = typeof(v);
+            if (t == "string") v = '"'+v+'"';
+            else if (t == "object" && v !== null) v = JSON.stringify(v);
+            json.push((arr ? "" : '"' + n + '":') + String(v));
+        }
+        var rawString = (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
+       return rawString;
+    }
+};
+$('#get-result').click(function (){
+	$('#result').text(JSON.stringify($('#json-tree').toJson()))
+})
+</script>
 
-<pre>
-1. 以“data”作为根节点
-2. 双击“span”标签可以编辑对应的“key”和“value”
-   双击之后变成input输入框，自动获得焦点，失去焦点时替换新的值
-   验证输入是否包含json的特殊字符，若验证不通过，则恢复为原来取值
-3. li标签的hover事件（鼠标进入）
-   3.1 会自动在后面添加按钮“Add after this node”
-       点击之后在当前节点后面添加新的键值
-   3.2 添加“DELETE”按钮，点击可以删除当前节点，若包含子节点，会一并删除
-   3.3 若当前节点不包含子节点，还会增加按钮“insert to this node”
-       点击之后将当前节点“value”插入到当前节点的子节点
-4. li标签的hover事件（鼠标移出）会删除按钮
-5. “GET JSON DATA”按钮可以将编辑之后的数据转换为JSON格式。
-</pre>
-
-<h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
       </section>
     </div>
 

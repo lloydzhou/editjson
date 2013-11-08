@@ -65,7 +65,7 @@ $('#json-tree').jsonEditor({
 	deleteButton: '<i class="icon-remove-circle"></i>Delete', 
 	insertButton: '<i class="icon-play-circle"></i>Insert',
 	separator: ' : ', 
-	data:<?php echo $jsonData->json_data;?>
+	data:{name:'value', sublevel: {key: 'value'}}
 })
 JSON.stringify = JSON.stringify || function (obj) {
     var t = typeof (obj);

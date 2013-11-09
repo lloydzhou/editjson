@@ -35,18 +35,23 @@
 		}
 		return '<li>' + k + sp + _w(d, w, o.valueClass) +'</li>';
 	}, _j = function (o){
-		var r = {}, w = (o && o.tag) || defaults.tag;
-		$.each($(this).children(), function (i,n){
+		var r = {}, w = (o && o.tag) || defaults.tag, l = $(this).children(), isObj = false;
+		$.each(l, function (i,n){
 			var c = $(n).children('ul');
 			if (c.length > 0) {
 				var k_ = $(n).children(w+':first').text(), k = k_ ? k_ : i;
-				r[k] = _j.call(c, o);
+				r[_k(k,i)] = _j.call(c, o);
 			} else {
 				var k = $(n).children(w+':first').text(), v = $(n).children(w+':eq(1)').text();
-				r[k] = v ? v : k;
+				r[_k(k,i)] = v ? v : k;
 			}
+			isObj = isObj || isNaN(parseInt(k));
 		})
-		return r;
+		if (isObj) return r;
+		r.length = l.length;
+		return Array.prototype.slice.call(r);
+	}, _k = function(k, i){
+		return isNaN(parseInt(k)) ? k : i;
 	}, _e = function (o){
 		o = o|| defaults;
 		if (o.rootText != $(this).text())

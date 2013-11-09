@@ -3,8 +3,11 @@
 		separator:' : ',
 		tag: 'span', 
 		rootClass: 'root',
+		rootText: 'ROOT',
+		rootTextClass: 'root-text',
 		keyClass: 'key', 
 		valueClass: 'val',
+		editableClass: 'editable',
 		buttonTag: 'a',
 		addButton: 'add after this node',
 		addButtonClass: 'add',
@@ -19,14 +22,13 @@
 		
 		/*callback function to validate the user input.*/
 		validate: function (val){return ('' != val) && (!/[\{\}]+/.test(val));},
-		edit: {},
 		data: {}
 	}, _w = function(v, w, c, t){w = w||defaults.tag;
 		return ['<', w, (c ? ' class="'+c+'"' : ''),(t ? ' title="'+ t +'"' : ''),  '>',v ,'</', w, '>'].join('');
-	}, _t = function(d, k, o){
+	}, _t = function(d, k, o, r){
 		o = o || defaults;
 		var sp = o.separator, w = o.tag;
-		k = (k ? _w(k, w, o.keyClass) : '');
+		k = _w(k, w, r || o.keyClass);
 		if (typeof d == 'object') {
 			var s = ''; for(var i in d) s += _t(d[i], i, o);
 			return '<li>__<ul>_</ul></li>'.replace('__', k).replace('_', s);
@@ -47,6 +49,7 @@
 		return r;
 	}, _e = function (o){
 		o = o|| defaults;
+		if (o.rootText != $(this).text())
 		$(this).one('dblclick', function (){
 			var obj = this, oldval = $(obj).text();
 			$(obj).html($('<input value="' + oldval +'"/>')).children().focus().blur(function(){
@@ -60,9 +63,11 @@
 		var w = o.tag, bw = o.buttonTag, 
 			ac = o.addButtonClass, ic = o.insertButtonClass, dc = o.deleteButtonClass,
 			ab = o.addButton, ib = o.insertButton, db = o.deleteButton,
-			at = o.addButtonTitle, it = o.insertButtonTitle,  dt = o.deleteButtonTitle;
+			at = o.addButtonTitle, it = o.insertButtonTitle,  dt = o.deleteButtonTitle,
+			ec = o.editableClass;
 		$(this).hover(function (){
 			var obj = this;
+			$(o.obj).find('li').removeClass(ec);$(obj).addClass(ec);
 			if ($(obj).children(bw).length < 1) {
 				//remove
 				if (!$(obj).parent().hasClass(o.rootClass))
@@ -83,12 +88,14 @@
 					o.change && o.change(o.obj);
 				})
 				//add after
+				if (!$(obj).parent().hasClass(o.rootClass))
 				$(_w(ab,bw, ac, it)).insertAfter($(obj).children(w+':last')).click(function (){
 					$(_t('value','key', o)).insertAfter(obj)._hover(o).children(w)._editor(o);
 					o.change && o.change(o.obj);
 				})
 			}
 		}, function (){
+			$(o.obj).find('li').removeClass(ec);
 			$(this).children([bw, '.', ac, ',', bw,'.', ic, ',', bw,'.', dc].join('')).remove()
 		})
 	};
@@ -97,8 +104,9 @@
 			var o = $.extend(defaults, options);
             return this.each(function() {  
 				o.obj = this;
-				$(this).html(_t(o.data, 'data', o)).addClass(o.rootClass);
-				$(this).find(o.tag)._editor(o)
+				$(this).data('option', o);
+				$(this).html(_t(o.data, o.rootText, o, o.rootTextClass)).addClass(o.rootClass);
+				$(this).find(o.tag + ':gt(0)')._editor(o)
 				$(this).find('li')._hover(o)
             });  
         }, _editor: function (o){

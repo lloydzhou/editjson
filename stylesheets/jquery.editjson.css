@@ -1,0 +1,8 @@
+.json-tree a {cursor: pointer; padding-left: 10px;float:right;}
+.json-tree span, .json-tree b{width: 120px;display:inline-block;font-weight: bold;font-style: italic;}
+.json-tree input {width: 120px}
+.json-tree li > ul {padding-left: 20px;}
+.json-tree li.editable{color: #666666;}
+.json-tree li.editable b {font-style: normal;}
+.json-tree li.editable ul {color: #404040;}
+.json-tree li.editable ul b {font-style: italic;}

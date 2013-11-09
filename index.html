@@ -55,19 +55,24 @@
 		.json-tree span, .json-tree b{width: 150px;display:inline-block;font-weight: bold;font-style: italic;}
 		.json-tree li > ul {padding-left: 20px;}
 		</style>
+		<textarea id="json-data" rows="10" cols="90"></textarea>
 		<ul id="json-tree" class="json-tree"></ul>
 		<button id="get-result">GET JSON DATA</button>
 		<div id="result"></div>
 <script>
-$('#json-tree').jsonEditor({
-	tag: 'b', 
-	keyClass: '', 
-	addButton: '<i class="icon-download"></i>Add After', 
-	deleteButton: '<i class="icon-remove-circle"></i>Delete', 
-	insertButton: '<i class="icon-play-circle"></i>Insert',
-	separator: ' : ', 
-	data:{name:'value', sublevel: {key: 'value'}}
-})
+$('#json-data').val('{"name":"value","sublevel":{"key":"<h1>value</h1><span>helloword.</span>"},"subarray":["1","2","3","helloworld"]}').change(function(){
+	var data = eval('(' + $(this).val() + ')');
+	$('#json-tree').jsonEditor({
+		tag: 'b', 
+		keyClass: '', 
+		addButton: '<i class="icon-download"></i>Add After', 
+		deleteButton: '<i class="icon-remove-circle"></i>Delete', 
+		insertButton: '<i class="icon-play-circle"></i>Insert',
+		separator: ' : ', 
+		data: eval('(' + $(this).val() + ')'),
+		change: function(obj){$('#json-data').val(JSON.stringify($(obj).toJson()))}
+	})
+}).change();
 JSON.stringify = JSON.stringify || function (obj) {
     var t = typeof (obj);
     if (t != "object" || obj === null) {

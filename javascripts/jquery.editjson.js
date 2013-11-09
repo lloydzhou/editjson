@@ -52,17 +52,17 @@
 		return Array.prototype.slice.call(r);
 	}, _k = function(k, i){
 		return isNaN(parseInt(k)) ? k : i;
-	}, 	_h = function(t){
-	  return t.replace(/[<>"®©]/g, function(m){
-	    return {'<':'&lt;','>':'&gt;', '"':'&quot;', '®':'&reg;', '©':'&copy;'}[m]})
+	}, 	_ = function(t){
+	  return t.replace(/[<>"®©]/g, function(m){ return {'<':'&lt;','>':'&gt;', '"':'&quot;', '®':'&reg;', '©':'&copy;'}[m]});
 	}, _e = function (o){
 		o = o|| defaults;
 		if (o.rootText != $(this).text())
 		$(this).one('dblclick', function (){
-			var obj = this, oldval = $(obj).text();
-			$(obj).html($('<input value="' + -h(oldval) +'"/>')).children().focus().blur(function(){
+			var obj = this, oldval = $(obj).text(), l = oldval.length
+				, t = (l < 20) ? '<input value="_">' : '<textarea rows="'+Math.floor(l/10+1)+'" cols="20">_</textarea>';
+			$(obj).html($(t.replace('_', _(oldval)))).children().focus().blur(function(){
 				var val = $(this).val();
-				_e.call($(obj).html(o.validate(val) ? val : oldval), o);
+				_e.call($(obj).html(_(o.validate(val) ? val : oldval)), o);
 				o.change && o.change(o.obj);
 			});
 		})
@@ -80,7 +80,7 @@
 				//remove
 				if (!$(obj).parent().hasClass(o.rootClass))
 				$(_w(db,bw, dc, dt)).insertAfter($(obj).children(w+':last')).click(function (){
-					if ($(obj).parent().children(w).length == 1) {
+					if ($(obj).parent().children('li').length == 1 && $(obj).parent().parent().children(w).length == 1) {
 						$(obj).children(':eq(1)').insertAfter($(obj).parent().parent().children(w+':first'));
 						$(obj).parent().remove();
 					}
@@ -90,7 +90,7 @@
 				//insert
 				if ($(obj).children('ul').length < 1)
 				$(_w(ib,bw, ic, it)).insertAfter($(obj).children(w+':last')).click(function (){
-					$(obj).html($(_t({key:$(obj).children(w+':eq(1)').text()}, $(obj).children(w+':first').text(), o)).html());
+					$(obj).html($(_t({key:_($(obj).children(w+':eq(1)').text())}, _($(obj).children(w+':first').text()), o)).html());
 					$(obj).find(w)._editor(o);
 					$(obj).find('li')._hover(o);
 					o.change && o.change(o.obj);
@@ -107,6 +107,7 @@
 			$(this).children([bw, '.', ac, ',', bw,'.', ic, ',', bw,'.', dc].join('')).remove()
 		})
 	};
+	$.htmlEncode = function(t) {return _(t);}
     $.fn.extend({
         jsonEditor: function(options) {  
 			var o = $.extend(defaults, options);
@@ -126,7 +127,8 @@
 				_h.call(this, o);
 			})
 		}, toJson: function (){
-			return _j.call(this, $(this).data('option'));
+			var o = $(this).data('option') || defaults;
+			return _j.call(this, o)[o.rootText];
 		}
     });  
 })(jQuery);  

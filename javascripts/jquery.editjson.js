@@ -33,7 +33,7 @@
 			var s = ''; for(var i in d) s += _t(d[i], i, o);
 			return '<li>__<ul>_</ul></li>'.replace('__', k).replace('_', s);
 		}
-		return '<li>' + k + sp + _w(d, w, o.valueClass) +'</li>';
+		return '<li>' + k + sp + _w(_(d), w, o.valueClass) +'</li>';
 	}, _j = function (o){
 		var r = {}, w = (o && o.tag) || defaults.tag, l = $(this).children(), isObj = false;
 		$.each(l, function (i,n){

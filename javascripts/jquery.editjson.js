@@ -19,6 +19,7 @@
 		deleteButtonClass: 'delete',
 		deleteButtonTitle: 'delete this node',
 		change: function ($this){},
+		maxInputLength: 20,
 		
 		/*callback function to validate the user input.*/
 		validate: function (val){return ('' != val) && (!/[\{\}]+/.test(val));},
@@ -58,8 +59,8 @@
 		o = o|| defaults;
 		if (o.rootText != $(this).text())
 		$(this).one('dblclick', function (){
-			var obj = this, oldval = $(obj).text(), l = oldval.length
-				, t = (l < 20) ? '<input value="_">' : '<textarea rows="'+Math.floor(l/10+1)+'" cols="20">_</textarea>';
+			var obj = this, oldval = $(obj).text(), l = oldval.length, m = o.maxInputLength
+				, t = (l < m) ? '<input value="_">' : '<textarea rows="'+Math.floor(l/m+1)+'" cols="'+m+'">_</textarea>';
 			$(obj).html($(t.replace('_', _(oldval)))).children().focus().blur(function(){
 				var val = $(this).val();
 				_e.call($(obj).html(_(o.validate(val) ? val : oldval)), o);

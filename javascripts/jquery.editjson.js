@@ -52,12 +52,15 @@
 		return Array.prototype.slice.call(r);
 	}, _k = function(k, i){
 		return isNaN(parseInt(k)) ? k : i;
+	}, 	_h = function(t){
+	  return t.replace(/[<>"®©]/g, function(m){
+	    return {'<':'&lt;','>':'&gt;', '"':'&quot;', '®':'&reg;', '©':'&copy;'}[m]})
 	}, _e = function (o){
 		o = o|| defaults;
 		if (o.rootText != $(this).text())
 		$(this).one('dblclick', function (){
 			var obj = this, oldval = $(obj).text();
-			$(obj).html($('<input value="' + oldval +'"/>')).children().focus().blur(function(){
+			$(obj).html($('<input value="' + -h(oldval) +'"/>')).children().focus().blur(function(){
 				var val = $(this).val();
 				_e.call($(obj).html(o.validate(val) ? val : oldval), o);
 				o.change && o.change(o.obj);

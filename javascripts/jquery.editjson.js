@@ -31,7 +31,7 @@
 		var sp = o.separator, w = o.tag;
 		k = _w(k, w, r || o.keyClass);
 		if (typeof d == 'object') {
-			var s = ''; for(var i in d) s += _t(d[i], i, o);
+			var s = ''; for(var i in d) if('indexOf' != i) s += _t(d[i], i, o);
 			return '<li>__<ul>_</ul></li>'.replace('__', k).replace('_', s);
 		}
 		return '<li>' + k + sp + _w(_(d), w, o.valueClass) +'</li>';
@@ -54,7 +54,7 @@
 	}, _k = function(k, i){
 		return isNaN(parseInt(k)) ? k : i;
 	}, 	_ = function(t){
-	  return t.replace(/[<>"®©]/g, function(m){ return {'<':'&lt;','>':'&gt;', '"':'&quot;', '®':'&reg;', '©':'&copy;'}[m]});
+	  return String(t).replace(/[<>"®©]/g, function(m){ return {'<':'&lt;','>':'&gt;', '"':'&quot;', '®':'&reg;', '©':'&copy;'}[m]});
 	}, _e = function (o){
 		o = o|| defaults;
 		if (o.rootText != $(this).text())
